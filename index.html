@@ -86,7 +86,7 @@
       height: 0.5rem;
       border-radius: 50%;
       background: var(--orange);
-      animation: pulse 1.4s ease-in-out infinite;
+      animation: pulse 2s ease-out infinite;
     }
     p.lead {
       margin: 0.85rem 0 0;
@@ -108,71 +108,52 @@
     }
     footer a:hover { color: var(--orange); }
 
-    /* scene animations */
-    .cloud { animation: drift 18s ease-in-out infinite alternate; }
-    .cloud.slow { animation-duration: 26s; animation-delay: -6s; }
-    .hat { transform-origin: 360px 148px; animation: bob 2.4s ease-in-out infinite; }
-    .cone-l { transform-origin: 248px 318px; animation: tip 2.8s ease-in-out infinite; }
-    .cone-r { transform-origin: 292px 318px; animation: tip 2.8s ease-in-out infinite 0.35s; }
-    .door { animation: doorGlow 3.2s ease-in-out infinite; }
-    .suitcase { transform-origin: 420px 330px; animation: wiggle 3.6s ease-in-out infinite; }
-    .backpack { transform-origin: 470px 335px; animation: wiggle 3.6s ease-in-out infinite 0.4s; }
-    .path-dot { animation: dash 2.2s linear infinite; }
-    .spark { animation: sparkle 2s ease-in-out infinite; }
-    .hammer { transform-origin: 520px 210px; animation: tap 1.8s ease-in-out infinite; }
+    /* scene animations — one shared 6s "beat" so everything breathes together */
+    :root { --beat: 6s; --ease: cubic-bezier(.45,.05,.25,1); --pop: cubic-bezier(.34,1.56,.64,1); }
+    .stage svg g, .stage svg circle, .stage svg rect { transform-box: fill-box; }
+    .cloud { animation: drift 22s var(--ease) infinite alternate; }
+    .cloud.slow { animation-duration: 30s; animation-delay: -9s; }
+    /* entrance: scene pieces pop in, staggered */
+    .enter { opacity: 0; animation: popIn 700ms var(--pop) forwards; }
+    .house  { transform-origin: 50% 100%; animation-delay: .35s; }
+    .hat-in { animation-delay: 1.0s; }
+    .cones-in { animation-delay: .75s; }
+    .bags-in { animation-delay: .9s; }
+    /* focal loop: hat settles, hammer taps in rhythm, window light warms, door glows */
+    .hat { transform-origin: 50% 100%; animation: bob var(--beat) var(--ease) infinite; }
+    .hammer { transform-origin: 30% 10%; animation: tap 1.5s var(--ease) infinite; }
+    .cone-l, .cone-r { transform-origin: 50% 100%; animation: tip var(--beat) var(--ease) infinite; }
+    .cone-r { animation-delay: -.5s; }
+    .door { animation: doorGlow var(--beat) var(--ease) infinite; }
+    .window-light { animation: windowOn var(--beat) var(--ease) infinite; }
+    .lantern { animation: flicker 3s ease-in-out infinite; }
+    .suitcase, .backpack { transform-origin: 50% 100%; animation: hop var(--beat) var(--ease) infinite; }
+    .backpack { animation-delay: .25s; }
+    .path-dot { animation: dash 1.8s var(--ease) infinite; }
+    .spark { transform-origin: 50% 50%; animation: sparkle 3s var(--ease) infinite; }
+    .smoke { transform-origin: 50% 50%; animation: puff 4s ease-out infinite; opacity: 0; }
+    .smoke.s2 { animation-delay: 1.33s; } .smoke.s3 { animation-delay: 2.66s; }
 
-    @keyframes logoIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes stageIn {
-      from { opacity: 0; transform: translateY(16px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.75); }
-    }
-    @keyframes drift {
-      from { transform: translateX(-8px); }
-      to { transform: translateX(14px); }
-    }
-    @keyframes bob {
-      0%, 100% { transform: translateY(0) rotate(-4deg); }
-      50% { transform: translateY(-7px) rotate(5deg); }
-    }
-    @keyframes tip {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(-6deg); }
-    }
-    @keyframes doorGlow {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.72; }
-    }
-    @keyframes wiggle {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-4px) rotate(-2deg); }
-    }
-    @keyframes dash {
-      0% { opacity: 0.25; }
-      40% { opacity: 1; }
-      100% { opacity: 0.25; }
-    }
-    @keyframes sparkle {
-      0%, 100% { opacity: 0.2; transform: scale(0.7); }
-      50% { opacity: 1; transform: scale(1.15); }
-    }
-    @keyframes tap {
-      0%, 60%, 100% { transform: rotate(-18deg); }
-      30% { transform: rotate(12deg); }
-    }
+    @keyframes logoIn { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
+    @keyframes stageIn { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    @keyframes popIn { 0% { opacity: 0; transform: translateY(14px) scale(.85); } 100% { opacity: 1; transform: none; } }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(241,138,46,.55); } 70% { box-shadow: 0 0 0 7px rgba(241,138,46,0); } }
+    @keyframes drift { from { transform: translateX(-10px); } to { transform: translateX(16px); } }
+    @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
+    @keyframes tap { 0%, 100% { transform: rotate(-16deg); } 35% { transform: rotate(14deg); } 45% { transform: rotate(10deg); } }
+    @keyframes tip { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-3deg); } }
+    @keyframes doorGlow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.12) drop-shadow(0 0 6px rgba(241,138,46,.6)); } }
+    @keyframes windowOn { 0%, 30%, 100% { fill: #dfe8f2; } 50%, 80% { fill: #ffe2b8; } }
+    @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
+    @keyframes hop { 0%, 70%, 100% { transform: translateY(0) scale(1,1); } 76% { transform: translateY(0) scale(1.06,.94); } 84% { transform: translateY(-9px) scale(.97,1.04); } 92% { transform: translateY(0) scale(1.03,.97); } }
+    @keyframes dash { 0%, 100% { opacity: .25; transform: scale(.8); } 30% { opacity: 1; transform: scale(1.15); } }
+    @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(.4) rotate(0); } 50% { opacity: 1; transform: scale(1.1) rotate(45deg); } }
+    @keyframes puff { 0% { opacity: 0; transform: translate(0,0) scale(.5); } 20% { opacity: .55; } 100% { opacity: 0; transform: translate(10px,-38px) scale(1.5); } }
 
     @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; }
+      *, .enter { animation: none !important; opacity: 1; }
+      .smoke { opacity: 0 !important; }
     }
   </style>
 </head>
@@ -225,7 +206,7 @@
       <ellipse cx="485" cy="336" rx="24" ry="14" fill="#274868"/>
 
       <!-- house body -->
-      <g transform="translate(300,165)">
+      <g class="enter house"><g transform="translate(300,165)">
         <rect x="0" y="60" width="160" height="140" rx="6" fill="#f4efe6" stroke="#1B3A5F" stroke-width="3"/>
         <!-- roof -->
         <path d="M-18 70 L80 -10 L178 70 Z" fill="url(#roof)"/>
@@ -235,7 +216,7 @@
         <rect x="18" y="8" width="22" height="42" fill="#1B3A5F"/>
         <rect x="14" y="2" width="30" height="10" rx="2" fill="#274868"/>
         <!-- window -->
-        <rect x="22" y="95" width="42" height="42" rx="8" fill="#dfe8f2" stroke="#1B3A5F" stroke-width="3"/>
+        <rect class="window-light" x="22" y="95" width="42" height="42" rx="8" fill="#dfe8f2" stroke="#1B3A5F" stroke-width="3"/>
         <line x1="43" y1="95" x2="43" y2="137" stroke="#1B3A5F" stroke-width="2"/>
         <line x1="22" y1="116" x2="64" y2="116" stroke="#1B3A5F" stroke-width="2"/>
         <!-- porch -->
@@ -247,16 +228,18 @@
         <circle cx="128" cy="165" r="3" fill="#1B3A5F"/>
         <!-- lantern -->
         <rect x="145" y="132" width="10" height="14" rx="2" fill="#1B3A5F"/>
-        <rect x="147" y="134" width="6" height="8" fill="#ffd9a8"/>
-      </g>
+        <rect class="lantern" x="147" y="134" width="6" height="8" fill="#ffd9a8"/>
+      </g></g>
+      <!-- chimney smoke -->
+      <g fill="#d9d0c2"><circle class="smoke" cx="329" cy="160" r="7"/><circle class="smoke s2" cx="329" cy="160" r="7"/><circle class="smoke s3" cx="329" cy="160" r="7"/></g>
 
       <!-- hard hat on roof -->
-      <g class="hat">
+      <g class="enter hat-in"><g class="hat">
         <ellipse cx="360" cy="152" rx="26" ry="10" fill="#F18A2E"/>
         <path d="M340 152 Q360 128 380 152 Z" fill="#F18A2E"/>
         <rect x="348" y="140" width="24" height="6" rx="2" fill="#ffd29a"/>
         <path d="M336 152 H384" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-      </g>
+      </g></g>
 
       <!-- tiny hammer floating -->
       <g class="hammer" opacity="0.9">
@@ -265,6 +248,7 @@
       </g>
 
       <!-- cones -->
+      <g class="enter cones-in">
       <g class="cone-l">
         <path d="M248 318 L262 250 L276 318 Z" fill="#F18A2E"/>
         <rect x="245" y="314" width="34" height="8" rx="2" fill="#1B3A5F"/>
@@ -277,17 +261,19 @@
         <rect x="296" y="278" width="16" height="7" fill="#fff" opacity="0.9"/>
       </g>
 
+      </g>
       <!-- dotted path -->
       <g fill="#F18A2E">
-        <circle class="path-dot" cx="520" cy="390" r="5" style="animation-delay:0s"/>
-        <circle class="path-dot" cx="490" cy="378" r="5" style="animation-delay:0.15s"/>
-        <circle class="path-dot" cx="462" cy="368" r="5" style="animation-delay:0.3s"/>
-        <circle class="path-dot" cx="436" cy="360" r="5" style="animation-delay:0.45s"/>
-        <circle class="path-dot" cx="412" cy="352" r="5" style="animation-delay:0.6s"/>
-        <circle class="path-dot" cx="390" cy="345" r="4.5" style="animation-delay:0.75s"/>
-        <circle class="path-dot" cx="370" cy="340" r="4" style="animation-delay:0.9s"/>
+        <circle class="path-dot" cx="520" cy="390" r="5" style="animation-delay:0.00s"/>
+        <circle class="path-dot" cx="490" cy="378" r="5" style="animation-delay:0.18s"/>
+        <circle class="path-dot" cx="462" cy="368" r="5" style="animation-delay:0.36s"/>
+        <circle class="path-dot" cx="436" cy="360" r="5" style="animation-delay:0.54s"/>
+        <circle class="path-dot" cx="412" cy="352" r="5" style="animation-delay:0.72s"/>
+        <circle class="path-dot" cx="390" cy="345" r="4.5" style="animation-delay:0.90s"/>
+        <circle class="path-dot" cx="370" cy="340" r="4" style="animation-delay:1.08s"/>
       </g>
 
+      <g class="enter bags-in">
       <!-- suitcase -->
       <g class="suitcase">
         <rect x="400" y="318" width="48" height="36" rx="6" fill="#1B3A5F"/>
@@ -305,6 +291,7 @@
         <polygon points="471,348 481,348 476,356" fill="#ffd29a"/>
       </g>
 
+      </g>
       <!-- mailbox -->
       <g transform="translate(500,300)">
         <rect x="0" y="20" width="6" height="40" fill="#1B3A5F"/>
@@ -324,7 +311,7 @@
   <div class="copy">
     <div class="badge"><span class="dot" aria-hidden="true"></span> Under construction</div>
     <h1>Coming soon</h1>
-    <p class="lead">Off-campus housing near TCNJ &amp; the Trenton area — for students and landlords.</p>
+    <p class="lead">Off-campus housing near TCNJ & the Trenton area — for students and landlords.</p>
   </div>
 
   <footer>
